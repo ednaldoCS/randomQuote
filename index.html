@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Random quote</title>
+	<link rel="stylesheet" type="text/css" href="script.js">
+	<script src="script.js"></script>
+
+	<link href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet">
+
+	<style type="text/css">
+	*{
+		margin: 0px ;
+		padding: 0px;
+	}
+
+		#cite a{
+			text-decoration: none;
+			color: black;
+		}
+
+		#quotes{
+			padding: 280px 20%;
+		}
+
+		#blockquote{
+			border-left: 8px solid #f4d794;
+			padding-left: 99px;
+			width: 82%;
+			font-size: 36px;
+		}
+
+		#areaBlockquote{
+			margin: 209px 20%;
+		}
+
+		#areaBlockquote>div{
+			margin-top: 159px;
+			padding-left: 60px;
+		}
+
+		#cite{
+			font-size: 26px;
+			margin-bottom: 8px;
+		}
+		#autor{
+			transition:All .3s ease;
+			display: flex;
+			justify-content: space-between;
+			cursor: pointer;
+		}
+
+
+		#autor:hover{
+			background: #333333;
+			color: white;
+			padding: 50px 30px;
+		}
+
+		#seta{
+			display: none;
+		}
+		#autor:hover > #seta{
+			display: block;
+		}
+		.quoteItem{
+			padding: 15px;
+			border-left: 8px solid #f7d794;
+			padding-left: 99px;
+			margin: 140px 309px 0px 250px;
+			font-size: 36px;
+			
+		}
+		#btn-random button{
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			border: none;
+			background: transparent;
+			margin: 31px 100px 0px auto;
+		}
+		#author{
+			margin: 101px 350px;
+			font-size: 36px;
+		}
+
+		footer{
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			margin: 50px auto;
+
+		}
+
+		footer a{
+			text-decoration: none;
+			color: black;
+			margin-left: 5px;
+			transition: all ease .3s;
+		}
+
+		footer a:hover{
+			background: rgba(0, 0, 0, .3);
+		}
+		@media (max-width: 550px) {
+			#blockquote{
+				font-size: 20px;
+				border-left: 5px solid #f7d794;
+			}
+			.quoteItem{
+				border-left: 5px solid #f7d794;
+				padding-left: 99px;
+				margin: 100px 10%;
+				font-size: 25px;
+			}
+
+			#author{
+				font-size: 25px;
+				margin: 199px 20% 100px 20%;
+			}
+		}
+	</style>
+
+
+	<script type="text/javascript">
+		let API='https://quote-garden.herokuapp.com/api/v3/quotes/random';
+		let API_by_author='https://quote-garden.herokuapp.com/api/v3/quotes?author=';
+		const getItems=async()=>{
+
+			let req=await fetch(API);
+			let json=await req.json()
+			let item=json;
+
+			console.log(item)
+			//container=document.getElementById('container').innerHTML=''
+			console.log(window.innerWidth)
+			//let byAuthoritem= json2
+			let blockquote=document.getElementById('blockquote');
+			blockquote.innerHTML=item.data[0].quoteText;
+			let cite = document.getElementById('cite');
+			cite.innerHTML=item.data[0].quoteAuthor;
+			document.getElementById('genre').innerHTML=item.data[0].quoteGenre
+	
+			document.getElementById('autor').addEventListener('click',async ()=>{
+				document.getElementById('areaBlockquote').innerHTML=''
+				let allQuotesByAuthor= await fetch(API_by_author+item.data[0].quoteAuthor)
+				let Json2= await allQuotesByAuthor.json();
+				let item2=Json2
+
+				for (var i = 0; i < item2.data.length; i++) {
+
+					document.getElementById('author').innerHTML=item2.data[i].quoteAuthor
+					let div=document.createElement('div');
+					div.classList='quoteItem'
+					let quote=document.createElement('div')
+					quote.innerHTML=item2.data[i].quoteText;
+					// let autor=document.createElement('p');
+					// autor.innerHTML=item2.data[i].quoteAuthor
+					//console.log(item2)
+
+					div.appendChild(quote);
+					// div.appendChild(autor)
+					document.getElementById("allBlockquoteAuthor").appendChild(div);;
+
+				}
+				
+			})
+		}
+
+		let random=async ()=>{
+			window.location.reload()
+		}
+	</script>
+</head>
+<body onload="getItems()">
+	<div id="btn-random">
+		<button id="rendonBtn" onclick="random()">Random <span class="material-icons">autorenew</span></button>
+	</div >
+		<div id="areaBlockquote">
+			<blockquote id="blockquote"></blockquote>
+			<div id="autor">
+				<div>
+					<div id="cite"> </div>
+					<p id="genre"></p>
+				</div>
+				<span id="seta" class="material-icons">trending_flat</span> 
+			</div>
+		</div>
+
+		<div id="allBlockquoteAuthor">
+			<div id="author"></div>
+		</div>
+
+
+		<footer>
+			Created by Ednaldo - <a href="https://devChallenges.io">devChallenges.io</a>
+		</footer>
+
+</body>
+</html>
